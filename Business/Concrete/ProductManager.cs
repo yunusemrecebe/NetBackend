@@ -56,7 +56,7 @@ namespace Business.Concrete
 
         //[SecuredOperation("Products.List,Admin")]
         [LogAspect(typeof(FileLogger))]
-        [CacheAspect(duration:1)]
+        [CacheAspect(duration:10)]
         public IDataResult<List<Product>> GetListByCategory(int categoryId)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetList(x => x.CategoryId == categoryId).ToList());
