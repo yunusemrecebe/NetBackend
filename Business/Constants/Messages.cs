@@ -23,5 +23,7 @@ namespace Business.Constants
         public static string UserRegistered = "Kullanıcı Kaydedildi!";
         public static string AccessTokenCreated = "Access Token Üretildi!";
         public static string AuthorizationDenied = "Bu İşlem İçin Yeterli Yetkiye Sahip Değilsiniz!";
+
+        public static string ProductNameAlreadyExists = "Bu isimde bir ürün daha önce eklenmiş!";
     }
 }
