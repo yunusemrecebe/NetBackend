@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
@@ -53,8 +54,9 @@ namespace Business.Concrete
             return new SuccessDataResult<Product>(_productDal.Get(x => x.ProductId == productId));
         }
 
-        [PerformanceAspect(5)]
-        [LogAspect(typeof(FileLogger))]
+        //[PerformanceAspect(5)]
+        //[LogAspect(typeof(FileLogger))]
+        [SecuredOperation("Admin")]
         public IDataResult<List<Product>> GetList()
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetList().ToList());
