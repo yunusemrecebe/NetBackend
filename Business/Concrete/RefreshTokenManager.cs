@@ -25,6 +25,18 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        public IResult Delete(RefreshToken refreshToken)
+        {
+            _refreshTokenDal.Delete(refreshToken);
+            return new SuccessResult();
+        }
+
+        public IDataResult<RefreshToken> GetByToken(string refreshToken)
+        {
+            var result = _refreshTokenDal.Get(x => x.Token == refreshToken);
+            return new SuccessDataResult<RefreshToken>(result);
+        }
+
         public IDataResult<RefreshToken> GetByUserId(int id)
         {
             var result = _refreshTokenDal.Get(x=> x.UserId == id);

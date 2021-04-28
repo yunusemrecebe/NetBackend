@@ -47,6 +47,45 @@ namespace Business.Concrete
             return new SuccessDataResult<RefreshToken>(refreshToken);
         }
 
+        public IDataResult<Token> CreateAccessTokenByRefreshToken(string refreshToken)
+        {
+            var existingRefreshToken = _refreshTokenService.GetByToken(refreshToken).Data;
+
+            if (existingRefreshToken == null)
+            {
+                return new ErrorDataResult<Token>(Messages.RefreshTokenNotFound);
+            }
+
+            var user = _userService.GetByUserId(existingRefreshToken.UserId).Data;
+
+            if (user == null)
+            {
+                return new ErrorDataResult<Token>(Messages.UserNotFound);
+            }
+
+            var userClaims = _userService.GetClaims(user);
+            var accessToken = _tokenHelper.CreateToken(user, userClaims);
+
+            existingRefreshToken.Token = accessToken.RefreshToken;
+            existingRefreshToken.Expiration = accessToken.RefreshTokenExpiration;
+            _refreshTokenService.Update(existingRefreshToken);
+
+            return new SuccessDataResult<Token>(accessToken);
+        }
+
+        public IResult RevokeRefreshToken(string refreshToken)
+        {
+            var existingRefreshToken = _refreshTokenService.GetByToken(refreshToken).Data;
+
+            if (existingRefreshToken == null)
+            {
+                return new ErrorDataResult<Token>(Messages.RefreshTokenNotFound);
+            }
+
+            _refreshTokenService.Delete(existingRefreshToken);
+            return new SuccessResult();
+        }
+
         public IDataResult<User> Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);

@@ -12,5 +12,7 @@ namespace Business.Abstract
         IResult UserExists(string email);
         IDataResult<Token> CreateAccessToken(User user);
         IDataResult<RefreshToken> CreateRefreshToken(Token token, int userId);
+        IDataResult<Token> CreateAccessTokenByRefreshToken(string refreshToken);
+        IResult RevokeRefreshToken(string refreshToken);
     }
 }
