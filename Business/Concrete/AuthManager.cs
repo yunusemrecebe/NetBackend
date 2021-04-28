@@ -12,11 +12,13 @@ namespace Business.Concrete
     {
         IUserService _userService;
         ITokenHelper _tokenHelper;
+        IRefreshTokenService _refreshTokenService;
 
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, IRefreshTokenService refreshTokenService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _refreshTokenService = refreshTokenService;
         }
 
         public IDataResult<Token> CreateAccessToken(User user)
@@ -24,6 +26,25 @@ namespace Business.Concrete
             var claims = _userService.GetClaims(user);
             var accessToken = _tokenHelper.CreateToken(user, claims);
             return new SuccessDataResult<Token>(accessToken, Messages.AccessTokenCreated);
+        }
+
+        public IDataResult<RefreshToken> CreateRefreshToken(Token token, int userId)
+        {
+            var refreshToken = _refreshTokenService.GetByUserId(userId).Data;
+
+            if (refreshToken == null)
+            {
+                _refreshTokenService.Add(new RefreshToken {UserId = userId, Token = token.RefreshToken, Expiration = token.RefreshTokenExpiration });
+            }
+            else
+            {
+                refreshToken.UserId = userId;
+                refreshToken.Token = token.RefreshToken;
+                refreshToken.Expiration = token.RefreshTokenExpiration;
+                _refreshTokenService.Update(refreshToken);
+            }
+
+            return new SuccessDataResult<RefreshToken>(refreshToken);
         }
 
         public IDataResult<User> Login(UserForLoginDto userForLoginDto)
