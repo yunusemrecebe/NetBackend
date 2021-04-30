@@ -2,11 +2,6 @@
 using Core.Utilities.Security.Jwt;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework.Contexts
 {
@@ -15,6 +10,12 @@ namespace DataAccess.Concrete.EntityFramework.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=DESKTOP-63SM79K;Database=Northwind;Trusted_Connection=true;");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RefreshToken>()
+                .HasKey(r => r.UserId);
         }
 
         public DbSet<Product> Products { get; set; }

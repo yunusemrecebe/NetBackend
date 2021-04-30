@@ -9,7 +9,6 @@ namespace Core.Utilities.Security.Jwt
 {
     public class RefreshToken : IEntity
     {
-        public int Id { get; set; }
         public int UserId { get; set; }
         public string Token { get; set; }
         public DateTime Expiration { get; set; }
