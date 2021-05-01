@@ -19,9 +19,9 @@ namespace Business.Constants
         public static string CategoryDeleted = "Kategori Silindi!";
         public static string CategoryUpdated = "Kategori Güncellendi!";
 
-        public static string UserNotFound = "Kullanıcı Bulunamadı!";
+        public static string UserNotFound = "Girilen bilgilere uygun bir kullanıcı bulunamadı!";
         public static string PasswordError = "Parola Hatalı!";
-        public static string SuccessfulLogin = "Giriş Başarılı!";
+        public static string SuccessfullLogin = "Giriş Başarılı!";
         public static string UserAlreadyExists = "Bu Kullanıc Zaten Mevcut";
         public static string UserRegistered = "Kullanıcı Kaydedildi!";
 
