@@ -22,7 +22,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
-        //[Authorize(Roles = "Product.List")]
         public IActionResult GetList()
         {
             var result = _productService.GetList();
@@ -31,6 +30,17 @@ namespace WebAPI.Controllers
                 return Ok(result.Data);
             }
             return BadRequest(result.Message);
+        }
+
+        [HttpGet("getallasync")]
+        public async Task<IActionResult> GetListAsync()
+        {
+            var result = _productService.GetListAsync();
+            if (result.Result.Success)
+            {
+                return Ok(result.Result.Data);
+            }
+            return BadRequest(result.Result.Message);
         }
 
         [HttpGet("getlistbycategory")]
@@ -64,6 +74,17 @@ namespace WebAPI.Controllers
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+
+        [HttpPost("addasync")]
+        public async Task<IActionResult> AddAsync(Product product)
+        {
+            var result = _productService.AddAsync(product);
+            if (result.Result.Success)
+            {
+                return Ok(result.Result.Message);
+            }
+            return BadRequest(result.Result.Message);
         }
 
         [HttpPost("update")]

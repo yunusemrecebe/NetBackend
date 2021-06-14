@@ -1,5 +1,4 @@
 ﻿using Business.Abstract;
-using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
@@ -14,6 +13,7 @@ using DataAccess.Abstract;
 using Entities.Concrete;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -28,6 +28,7 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
+        [PerformanceAspect(0)]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
@@ -43,6 +44,22 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
+        [PerformanceAspect(0)]
+        [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
+        public async Task<IResult> AddAsync(Product product)
+        {
+            IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName));
+
+            if (result != null)
+            {
+                return result;
+            }
+
+            await _productDal.AddAsync(product);
+            return new SuccessResult(Messages.ProductAdded);
+        }
+
         public IResult Delete(Product product)
         {
             _productDal.Delete(product);
@@ -54,12 +71,17 @@ namespace Business.Concrete
             return new SuccessDataResult<Product>(_productDal.Get(x => x.ProductId == productId));
         }
 
-        //[PerformanceAspect(5)]
-        //[LogAspect(typeof(FileLogger))]
-        [SecuredOperation("Admin")]
+        [PerformanceAspect(0)]
         public IDataResult<List<Product>> GetList()
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetList().ToList());
+        }
+
+        [PerformanceAspect(0)]
+        public async Task<IDataResult<List<Product>>> GetListAsync()
+        {
+            var result = await _productDal.GetListAsync();
+            return new SuccessDataResult<List<Product>>(result.ToList());
         }
 
         //[SecuredOperation("Products.List,Admin")]
